@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AutoBread</title>
+  <style>
+    body { background: #111; color: #fff; font-family: Arial; text-align: center; padding: 50px; }
+    button { padding: 10px 20px; font-size: 18px; }
+    .result { margin-top: 30px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h1>🍞 AutoBread Web App</h1>
+  <p>Click below to auto-claim crypto from live faucets.</p>
+  <button onclick="runBot()">Start AutoBread</button>
+  <div class="result" id="result"></div>
+
+  <script>
+    function runBot() {
+      document.getElementById("result").innerText = "Running AutoBread...";
+      fetch("/run", { method: "POST" })
+        .then(res => res.json())
+        .then(data => {
+          const text = JSON.stringify(data.claimed, null, 2);
+          document.getElementById("result").innerText = "✅ Claimed:\\n" + text;
+        })
+        .catch(err => {
+          document.getElementById("result").innerText = "❌ Error: " + err;
+        });
+    }
+  </script>
+</body>
+</html>
