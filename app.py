@@ -1,19 +1,20 @@
-from flask import Flask, render_template, jsonify, request
-from ai_scraper import find_faucets
-from claim_engine import claim_from_faucets, sign_up_to_all
+from flask import Flask, render_template, jsonify
+from bot_engine import run_faucet_bot
 
 app = Flask(__name__)
 
+logs = []
+
 @app.route("/")
-def index():
-    return render_template("index.html")
+def home():
+    return render_template("index.html", logs=logs)
 
 @app.route("/run", methods=["POST"])
-def run_autobread():
-    faucets = find_faucets()
-    creds = sign_up_to_all(faucets)
-    results = claim_from_faucets(faucets, creds)
-    return jsonify({"claimed": results})
+def run_bot():
+    logs.clear()
+    for log in run_faucet_bot():
+        logs.append(log)
+    return jsonify({"logs": logs})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
